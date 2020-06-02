@@ -48,7 +48,6 @@ defmodule JaResource.Delete do
       def handle_delete(conn, nil), do: nil
       def handle_delete(conn, model) do
         model
-        |> __MODULE__.model.changeset(%{})
         |> __MODULE__.repo().delete
       end
 
