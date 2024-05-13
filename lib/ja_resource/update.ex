@@ -48,7 +48,8 @@ defmodule JaResource.Update do
       end
 
   """
-  @callback handle_update(Plug.Conn.t, JaResource.record, JaResource.attributes) :: Plug.Conn.t | JaResource.record | nil
+  @callback handle_update(Plug.Conn.t(), JaResource.record(), JaResource.attributes()) ::
+              Plug.Conn.t() | JaResource.record() | nil
 
   @doc """
   Returns a `Plug.Conn` in response to errors during update.
@@ -56,14 +57,14 @@ defmodule JaResource.Update do
   Default implementation sets the status to `:unprocessable_entity` and renders
   the error messages provided.
   """
-  @callback handle_invalid_update(Plug.Conn.t, Ecto.Changeset.t) :: Plug.Conn.t
+  @callback handle_invalid_update(Plug.Conn.t(), Ecto.Changeset.t()) :: Plug.Conn.t()
 
   @doc """
   Returns a `Plug.Conn` in response to successful update.
 
   Default implementation renders the view.
   """
-  @callback render_update(Plug.Conn.t, JaResource.record) :: Plug.Conn.t
+  @callback render_update(Plug.Conn.t(), JaResource.record()) :: Plug.Conn.t()
 
   defmacro __using__(_) do
     quote do
@@ -72,8 +73,9 @@ defmodule JaResource.Update do
       @behaviour JaResource.Update
 
       def handle_update(conn, nil, _params), do: nil
+
       def handle_update(_conn, model, attributes) do
-        __MODULE__.model.changeset(model, attributes)
+        __MODULE__.model().changeset(model, attributes)
       end
 
       def handle_invalid_update(conn, errors) do
@@ -87,7 +89,7 @@ defmodule JaResource.Update do
         |> Phoenix.Controller.render(:show, data: model)
       end
 
-      defoverridable [handle_update: 3, handle_invalid_update: 2, render_update: 2]
+      defoverridable handle_update: 3, handle_invalid_update: 2, render_update: 2
     end
   end
 
@@ -95,8 +97,8 @@ defmodule JaResource.Update do
   Execute the update action on a given module implementing Update behaviour and conn.
   """
   def call(controller, conn) do
-    model      = controller.record(conn, conn.params["id"])
-    merged     = JaResource.Attributes.from_params(conn.params)
+    model = controller.record(conn, conn.params["id"])
+    merged = JaResource.Attributes.from_params(conn.params)
     attributes = controller.permitted_attributes(conn, merged, :update)
 
     conn
@@ -106,21 +108,30 @@ defmodule JaResource.Update do
   end
 
   @doc false
-  def update(%Ecto.Changeset{} = changeset, controller) do
-    controller.repo().update(changeset)
+  if Code.ensure_loaded?(Ecto.Changeset) do
+    def update(%Ecto.Changeset{} = changeset, controller) do
+      controller.repo().update(changeset)
+    end
   end
+
   if Code.ensure_loaded?(Ecto.Multi) do
     def update(%Ecto.Multi{} = multi, controller) do
       controller.repo().transaction(multi)
     end
   end
+
   def update(other, _controller), do: other
 
   @doc false
   def respond(%Plug.Conn{} = conn, _oldconn, _), do: conn
   def respond(nil, conn, _), do: send_resp(conn, :not_found, "")
-  def respond({:error, errors}, conn, controller), do: controller.handle_invalid_update(conn, errors)
-  def respond({:error, _name, errors, _changes}, conn, controller), do: controller.handle_invalid_update(conn, errors)
+
+  def respond({:error, errors}, conn, controller),
+    do: controller.handle_invalid_update(conn, errors)
+
+  def respond({:error, _name, errors, _changes}, conn, controller),
+    do: controller.handle_invalid_update(conn, errors)
+
   def respond({:ok, model}, conn, controller), do: controller.render_update(conn, model)
   def respond(model, conn, controller), do: controller.render_update(conn, model)
 end
