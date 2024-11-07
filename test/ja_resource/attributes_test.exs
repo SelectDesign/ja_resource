@@ -19,6 +19,7 @@ defmodule JaResource.AttributesTest do
       "title" => "a post",
       "category_id" => "1"
     }
+
     actual = DefaultController.permitted_attributes(%Plug.Conn{}, attrs, :update)
     assert actual == attrs
   end
@@ -29,6 +30,7 @@ defmodule JaResource.AttributesTest do
       "title" => "a post",
       "category_id" => "1"
     }
+
     actual = CustomController.permitted_attributes(%Plug.Conn{}, attrs, :update)
     assert actual == %{"title" => "a post"}
   end
@@ -36,7 +38,7 @@ defmodule JaResource.AttributesTest do
   test "formatting attributes from json-api params with relationships" do
     params = %{
       "data" => %{
-        "id"   => "1",
+        "id" => "1",
         "type" => "post",
         "attributes" => %{
           "title" => "a post"
@@ -54,12 +56,13 @@ defmodule JaResource.AttributesTest do
         }
       }
     }
+
     merged = %{
-      "type" => "post",
       "title" => "a post",
       "category_id" => "1",
       "tag_ids" => ["1", "2"]
     }
+
     actual = JaResource.Attributes.from_params(params)
     assert actual == merged
   end
@@ -73,10 +76,11 @@ defmodule JaResource.AttributesTest do
         }
       }
     }
+
     merged = %{
-      "type" => "post",
       "title" => "a post"
     }
+
     actual = JaResource.Attributes.from_params(params)
     assert actual == merged
   end
@@ -92,10 +96,11 @@ defmodule JaResource.AttributesTest do
         }
       }
     }
+
     merged = %{
-      "type" => "post",
       "category_id" => "1"
     }
+
     actual = JaResource.Attributes.from_params(params)
     assert actual == merged
   end
