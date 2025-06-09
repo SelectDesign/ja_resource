@@ -108,16 +108,22 @@ defmodule JaResource.Update do
   end
 
   @doc false
-  if Code.ensure_loaded?(Ecto.Changeset) do
-    def update(%Ecto.Changeset{} = changeset, controller) do
-      controller.repo().update(changeset)
-    end
+  # If the application recompiles ja_resource without also recompiling ecto, this will fail.
+  # If you get an error in ja_resource similiar to "could not load module Ecto.Changeset due to reason :nofile"
+  # clean the ecto dependency and try again:
+  # mix deps.clean ecto
+  # or
+  # MIX_ENV=test mix deps.clean ecto
+  Code.ensure_loaded!(Ecto.Changeset)
+
+  def update(%Ecto.Changeset{} = changeset, controller) do
+    controller.repo().update(changeset)
   end
 
-  if Code.ensure_loaded?(Ecto.Multi) do
-    def update(%Ecto.Multi{} = multi, controller) do
-      controller.repo().transaction(multi)
-    end
+  Code.ensure_loaded!(Ecto.Multi)
+
+  def update(%Ecto.Multi{} = multi, controller) do
+    controller.repo().transaction(multi)
   end
 
   def update(other, _controller), do: other
