@@ -38,7 +38,12 @@ defmodule JaResource.Create do
       end
 
   """
-  @callback handle_create(Plug.Conn.t, JaResource.attributes) :: Plug.Conn.t | Ecto.Changeset.t | JaResource.record | {:ok, JaResource.record} | {:error, JaResource.validation_errors}
+  @callback handle_create(Plug.Conn.t(), JaResource.attributes()) ::
+              Plug.Conn.t()
+              | Ecto.Changeset.t()
+              | JaResource.record()
+              | {:ok, JaResource.record()}
+              | {:error, JaResource.validation_errors()}
 
   @doc """
   Returns a `Plug.Conn` in response to errors during create.
@@ -46,14 +51,14 @@ defmodule JaResource.Create do
   Default implementation sets the status to `:unprocessable_entity` and renders
   the error messages provided.
   """
-  @callback handle_invalid_create(Plug.Conn.t, Ecto.Changeset.t) :: Plug.Conn.t
+  @callback handle_invalid_create(Plug.Conn.t(), Ecto.Changeset.t()) :: Plug.Conn.t()
 
   @doc """
   Returns a `Plug.Conn` in response to successful create.
 
   Default implementation sets the status to `:created` and renders the view.
   """
-  @callback render_create(Plug.Conn.t, JaResource.record) :: Plug.Conn.t
+  @callback render_create(Plug.Conn.t(), JaResource.record()) :: Plug.Conn.t()
 
   defmacro __using__(_) do
     quote do
@@ -63,7 +68,7 @@ defmodule JaResource.Create do
       import Plug.Conn
 
       def handle_create(_conn, attributes) do
-        __MODULE__.model.changeset(__MODULE__.model.__struct__, attributes)
+        __MODULE__.model().changeset(__MODULE__.model().__struct__, attributes)
       end
 
       def handle_invalid_create(conn, errors) do
@@ -78,7 +83,7 @@ defmodule JaResource.Create do
         |> Phoenix.Controller.render(:show, data: model)
       end
 
-      defoverridable [handle_create: 2, handle_invalid_create: 2, render_create: 2]
+      defoverridable handle_create: 2, handle_invalid_create: 2, render_create: 2
     end
   end
 
@@ -92,6 +97,7 @@ defmodule JaResource.Create do
   def call(controller, conn) do
     merged = JaResource.Attributes.from_params(conn.params)
     attributes = controller.permitted_attributes(conn, merged, :create)
+
     conn
     |> controller.handle_create(attributes)
     |> JaResource.Create.insert(controller)
@@ -99,20 +105,35 @@ defmodule JaResource.Create do
   end
 
   @doc false
+  # If the application recompiles ja_resource without also recompiling ecto, this will fail.
+  # If you get an error in ja_resource similiar to "could not load module Ecto.Changeset due to reason :nofile"
+  # clean the ecto dependency and try again:
+  # mix deps.clean ecto
+  # or
+  # MIX_ENV=test mix deps.clean ecto
+  Code.ensure_loaded!(Ecto.Changeset)
+
   def insert(%Ecto.Changeset{} = changeset, controller) do
     controller.repo().insert(changeset)
   end
-  if Code.ensure_loaded?(Ecto.Multi) do
-    def insert(%Ecto.Multi{} = multi, controller) do
-      controller.repo().transaction(multi)
-    end
+
+  Code.ensure_loaded!(Ecto.Multi)
+
+  def insert(%Ecto.Multi{} = multi, controller) do
+    controller.repo().transaction(multi)
   end
+
   def insert(other, _controller), do: other
 
   @doc false
   def respond(%Plug.Conn{} = conn, _old_conn, _), do: conn
-  def respond({:error, errors}, conn, controller), do: controller.handle_invalid_create(conn, errors)
-  def respond({:error, _name, errors, _changes}, conn, controller), do: controller.handle_invalid_create(conn, errors)
+
+  def respond({:error, errors}, conn, controller),
+    do: controller.handle_invalid_create(conn, errors)
+
+  def respond({:error, _name, errors, _changes}, conn, controller),
+    do: controller.handle_invalid_create(conn, errors)
+
   def respond({:ok, model}, conn, controller), do: controller.render_create(conn, model)
   def respond(model, conn, controller), do: controller.render_create(conn, model)
 end
