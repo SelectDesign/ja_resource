@@ -35,7 +35,7 @@ defmodule JaResource.Attributes do
       end
 
   """
-  @callback permitted_attributes(Plug.Conn.t, JaResource.attributes, :update | :create) :: JaResource.attributes
+  @callback permitted_attributes(Plug.Conn.t(), JaResource.attributes(), :update | :create) :: JaResource.attributes()
 
   defmacro __using__(_) do
     quote do
@@ -44,7 +44,7 @@ defmodule JaResource.Attributes do
 
         def permitted_attributes(_conn, attrs, _), do: attrs
 
-        defoverridable [permitted_attributes: 3]
+        defoverridable permitted_attributes: 3
       end
     end
   end
@@ -63,14 +63,16 @@ defmodule JaResource.Attributes do
   end
 
   defp parse_relationships(%{"relationships" => rels}) do
-    Enum.reduce rels, %{}, fn
-      ({name, %{"data" => nil}}, rel) ->
+    Enum.reduce(rels, %{}, fn
+      {name, %{"data" => nil}}, rel ->
         Map.put(rel, "#{name}_id", nil)
-      ({name, %{"data" => %{"id" => id}}}, rel) ->
+
+      {name, %{"data" => %{"id" => id}}}, rel ->
         Map.put(rel, "#{name}_id", id)
-      ({name, %{"data" => ids}}, rel) when is_list(ids) ->
-        Map.put(rel, "#{name}_ids", Enum.map(ids, &(&1["id"])))
-    end
+
+      {name, %{"data" => ids}}, rel when is_list(ids) ->
+        Map.put(rel, "#{name}_ids", Enum.map(ids, & &1["id"]))
+    end)
   end
 
   defp parse_relationships(_) do

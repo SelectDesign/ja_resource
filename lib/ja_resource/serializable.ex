@@ -45,7 +45,7 @@ defmodule JaResource.Serializable do
 
   See http://github.com/AgilionApps/ja_serializer for option format.
   """
-  @callback serialization_opts(Plug.Conn.t, map, struct | list) :: Keyword.t
+  @callback serialization_opts(Plug.Conn.t(), map, struct | list) :: Keyword.t()
 
   defmacro __using__(_) do
     quote do
@@ -54,14 +54,17 @@ defmodule JaResource.Serializable do
 
         def serialization_opts(_conn, %{"fields" => f, "include" => i}, _model_or_models),
           do: [include: i, fields: f]
+
         def serialization_opts(_conn, %{"include" => i}, _model_or_models),
           do: [include: i]
+
         def serialization_opts(_conn, %{"fields" => f}, _model_or_models),
           do: [fields: f]
+
         def serialization_opts(_conn, _params, _model_or_models),
           do: []
 
-        defoverridable [serialization_opts: 3]
+        defoverridable serialization_opts: 3
       end
     end
   end
