@@ -24,7 +24,7 @@ defmodule JaResource.Record do
       end
 
   """
-  @callback record(Plug.Conn.t, JaResource.id) :: Plug.Conn.t | JaResource.record
+  @callback record(Plug.Conn.t(), JaResource.id()) :: Plug.Conn.t() | JaResource.record()
 
   defmacro __using__(_) do
     quote do
@@ -32,13 +32,18 @@ defmodule JaResource.Record do
         use JaResource.Records
         @behaviour JaResource.Record
 
-        def record(conn, id) do
+        def record(conn, id) when is_binary(id) do
+          int_id = String.to_integer(id)
+          record(conn, int_id)
+        end
+
+        def record(conn, id) when is_integer(id) do
           conn
-          |> records
+          |> records()
           |> repo().get(id)
         end
 
-        defoverridable [record: 2]
+        defoverridable record: 2
       end
     end
   end

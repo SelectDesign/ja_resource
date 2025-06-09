@@ -5,7 +5,7 @@ defmodule JaResource.Mixfile do
     [
       app: :ja_resource,
       version: "0.3.2",
-      elixir: "~> 1.2",
+      elixir: "~> 1.15",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       source_url: "https://github.com/vt-elixir/ja_resource",
@@ -20,18 +20,18 @@ defmodule JaResource.Mixfile do
     [applications: [:logger, :phoenix]]
   end
 
-  defp deps do
+  defp deps() do
     [
-      {:ecto, "~> 3.0"},
-      {:plug, "~> 1.2"},
-      {:phoenix, "~> 1.1"},
-      {:ja_serializer, "~> 0.9"},
-      {:earmark, "~> 1.0.1", only: :dev},
-      {:ex_doc, "~> 0.13", only: :dev}
+      {:ecto, "~> 3.9"},
+      {:plug, "~> 1.17.0"},
+      {:plug_cowboy, "~> 2.6"},
+      {:phoenix, "~> 1.4"},
+      {:ja_serializer, "~> 0.18"},
+      {:poison, "~> 2.2.0"}
     ]
   end
 
-  defp package do
+  defp package() do
     [
       licenses: ["Apache 2.0"],
       maintainers: ["Alan Peabody", "Pete Brown"],

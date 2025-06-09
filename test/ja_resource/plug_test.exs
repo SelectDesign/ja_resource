@@ -1,9 +1,9 @@
 defmodule JaResource.PlugTest do
   use ExUnit.Case
-  use Plug.Test
+  import Plug.Conn
 
   defmodule Example do
-    def handle_index(conn, _),  do: assign(conn, :handler, :index)
+    def handle_index(conn, _), do: assign(conn, :handler, :index)
   end
 
   test "init returns all actions by default" do
@@ -25,10 +25,11 @@ defmodule JaResource.PlugTest do
     conn = %Plug.Conn{
       private: %{
         phoenix_controller: JaResource.PlugTest.Example,
-        phoenix_action:     :index
+        phoenix_action: :index
       },
       params: %{}
     }
+
     results = JaResource.Plug.call(conn, allowed: [:index])
     assert results.assigns[:handler] == :index
   end
@@ -37,10 +38,11 @@ defmodule JaResource.PlugTest do
     conn = %Plug.Conn{
       private: %{
         phoenix_controller: JaResource.PlugTest.Example,
-        phoenix_action:     :index
+        phoenix_action: :index
       },
       params: %{}
     }
+
     results = JaResource.Plug.call(conn, allowed: [:show])
     refute results.assigns[:handler]
   end
@@ -49,10 +51,11 @@ defmodule JaResource.PlugTest do
     conn = %Plug.Conn{
       private: %{
         phoenix_controller: JaResource.PlugTest.Example,
-        phoenix_action:     :foo
+        phoenix_action: :foo
       },
       params: %{}
     }
+
     results = JaResource.Plug.call(conn, allowed: [:index])
     refute results.assigns[:handler]
   end

@@ -1,6 +1,7 @@
 defmodule JaResource.IndexTest do
   use ExUnit.Case
-  use Plug.Test
+  import Plug.Conn
+  import Plug.Test
   alias JaResource.Index
 
   defmodule DefaultController do

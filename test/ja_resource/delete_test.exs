@@ -1,6 +1,7 @@
 defmodule JaResource.DeleteTest do
   use ExUnit.Case
-  use Plug.Test
+  import Plug.Conn
+  import Plug.Test
   alias JaResource.Delete
 
   defmodule DefaultController do
