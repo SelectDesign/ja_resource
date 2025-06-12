@@ -27,7 +27,7 @@ defmodule JaResource.Mixfile do
       {:plug_cowboy, "~> 2.6"},
       {:phoenix, "~> 1.4"},
       {:ja_serializer, "~> 0.18"},
-      {:poison, "~> 2.2.0"}
+      {:poison, "~> 3.1"}
     ]
   end
 
