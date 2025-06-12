@@ -22,7 +22,7 @@ defmodule JaResource.Mixfile do
 
   defp deps() do
     [
-      {:ecto, "~> 3.9"},
+      {:ecto, "~> 3.8"},
       {:plug, "~> 1.17.0"},
       {:plug_cowboy, "~> 2.6"},
       {:phoenix, "~> 1.4"},
