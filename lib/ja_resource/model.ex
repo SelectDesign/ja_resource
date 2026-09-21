@@ -31,6 +31,8 @@ defmodule JaResource.Model do
     end
   end
 
+  # Skip sobelow because the atom we are creating is based on the controller and we only have so many controllers.
+  # sobelow_skip ["DOS.StringToAtom"]
   def model_from_controller(module) do
     [_elixir, app | rest] =
       module

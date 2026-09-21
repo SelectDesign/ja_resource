@@ -27,7 +27,8 @@ defmodule JaResource.Mixfile do
       {:phoenix, "~> 1.1"},
       {:ja_serializer, "~> 0.9"},
       {:earmark, "~> 1.0.1", only: :dev},
-      {:ex_doc, "~> 0.13", only: :dev}
+      {:ex_doc, "~> 0.13", only: :dev},
+      {:sobelow, "~> 0.15", only: [:dev, :test], runtime: false, warn_if_outdated: true}
     ]
   end
 

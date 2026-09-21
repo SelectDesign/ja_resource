@@ -40,5 +40,7 @@ jobs:
         run: mix deps.compile --warnings-as-errors
       - name: Compile app
         run: mix compile
+      - name: Run sobelow
+        run: mix sobelow -v --skip --exit low
       - name: Run tests
         run: mix test
