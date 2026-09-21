@@ -30,7 +30,7 @@ defmodule JaResource.Records do
 
   Return value should be %Plug.Conn{} or an %Ecto.Query{}.
   """
-  @callback records(Plug.Conn.t) :: Plug.Conn.t | JaResource.records
+  @callback records(Plug.Conn.t()) :: Plug.Conn.t() | JaResource.records()
 
   defmacro __using__(_) do
     quote do
@@ -40,7 +40,7 @@ defmodule JaResource.Records do
 
         def records(_conn), do: model()
 
-        defoverridable [records: 1]
+        defoverridable records: 1
       end
     end
   end

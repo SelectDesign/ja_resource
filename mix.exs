@@ -5,7 +5,7 @@ defmodule JaResource.Mixfile do
     [
       app: :ja_resource,
       version: "0.3.2",
-      elixir: "~> 1.2",
+      elixir: "~> 1.14",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       source_url: "https://github.com/vt-elixir/ja_resource",
