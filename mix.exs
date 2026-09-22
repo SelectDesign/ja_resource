@@ -5,7 +5,7 @@ defmodule JaResource.Mixfile do
     [
       app: :ja_resource,
       version: "0.3.2",
-      elixir: "~> 1.15",
+      elixir: "~> 1.14",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       source_url: "https://github.com/vt-elixir/ja_resource",
@@ -27,7 +27,8 @@ defmodule JaResource.Mixfile do
       {:plug_cowboy, "~> 2.6"},
       {:phoenix, "~> 1.4"},
       {:ja_serializer, "~> 0.18"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:sobelow, "~> 0.14", only: [:dev, :test], runtime: false, warn_if_outdated: true}
     ]
   end
 
