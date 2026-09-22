@@ -29,7 +29,7 @@ defmodule JaResource.Mixfile do
       {:phoenix, "~> 1.4"},
       {:ja_serializer, "~> 0.18"},
       {:poison, "~> 3.1"},
-      {:sobelow, "~> 0.14", only: [:dev, :test], runtime: false, warn_if_outdated: true}
+      {:sobelow, "~> 0.15", only: [:dev, :test], runtime: false, warn_if_outdated: true}
     ]
   end
 
