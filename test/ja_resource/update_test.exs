@@ -16,9 +16,11 @@ defmodule JaResource.UpdateTest do
     def repo, do: JaResourceTest.Repo
     def model, do: JaResourceTest.Post
     def handle_update(c, nil, _attrs), do: send_resp(c, 420, "")
+
     def handle_update(_c, _post, %{"title" => "valid"}) do
       {:ok, %JaResourceTest.Post{title: "valid"}}
     end
+
     def handle_update(_c, _post, %{"title" => "invalid"}) do
       {:error, [title: "is invalid"]}
     end
@@ -29,8 +31,10 @@ defmodule JaResource.UpdateTest do
     use JaResource.Update
     def repo, do: JaResourceTest.Repo
     def model, do: JaResourceTest.Post
+
     def handle_invalid_update(conn, errors),
       do: put_status(conn, 401) |> Phoenix.Controller.render(:errors, data: errors)
+
     def render_update(conn, model),
       do: put_status(conn, :created) |> Phoenix.Controller.render(:show, data: model)
   end
@@ -39,9 +43,11 @@ defmodule JaResource.UpdateTest do
     use Phoenix.Controller
     use JaResource.Update
     def repo, do: JaResourceTest.Repo
+
     def handle_update(_c, _post, params) do
       changeset = JaResourceTest.Post.changeset(JaResourceTest.Post, params)
-      Ecto.Multi.new
+
+      Ecto.Multi.new()
       |> Ecto.Multi.update(:post, changeset)
     end
   end
@@ -116,9 +122,10 @@ defmodule JaResource.UpdateTest do
 
   def prep_conn(method, path, params \\ %{}) do
     params = Map.merge(params, %{"_format" => "json"})
+
     conn(method, path, params)
-      |> fetch_query_params
-      |> Phoenix.Controller.put_view(JaResourceTest.PostView)
+    |> fetch_query_params
+    |> Phoenix.Controller.put_view(JaResourceTest.PostView)
   end
 
   defp ja_attrs(id, attrs) do

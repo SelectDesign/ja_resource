@@ -10,43 +10,43 @@ defmodule JaResourceTest.Repo do
   """
 
   def start do
-    Agent.start_link(fn -> MapSet.new end, name: __MODULE__)
+    Agent.start_link(fn -> MapSet.new() end, name: __MODULE__)
   end
 
   def reset do
-    Agent.update(__MODULE__, fn(_old) -> MapSet.new end)
+    Agent.update(__MODULE__, fn _old -> MapSet.new() end)
   end
 
   def one(query) do
-    Agent.get __MODULE__, fn(state) ->
-      Enum.find state, fn(record) ->
+    Agent.get(__MODULE__, fn state ->
+      Enum.find(state, fn record ->
         record.__struct__ == query
-      end
-    end
+      end)
+    end)
   end
 
   def all(query) do
-    Agent.get __MODULE__, fn(state) ->
-      Enum.filter state, fn(record) ->
+    Agent.get(__MODULE__, fn state ->
+      Enum.filter(state, fn record ->
         record.__struct__ == query
-      end
-    end
+      end)
+    end)
   end
 
   def get_by(query, [{field, val}]) do
-    Agent.get __MODULE__, fn(state) ->
-      Enum.find state, fn(record) ->
+    Agent.get(__MODULE__, fn state ->
+      Enum.find(state, fn record ->
         record.__struct__ == query && Map.get(record, field) == val
-      end
-    end
+      end)
+    end)
   end
 
   def get(_query, id) do
-    Agent.get __MODULE__, fn(state) ->
-      Enum.find state, fn(record) ->
+    Agent.get(__MODULE__, fn state ->
+      Enum.find(state, fn record ->
         record.id == id
-      end
-    end
+      end)
+    end)
   end
 
   def insert(%Ecto.Changeset{valid?: true} = changeset) do
@@ -70,14 +70,16 @@ defmodule JaResourceTest.Repo do
   end
 
   def update(new) do
-    Agent.update __MODULE__, fn(state) ->
-      old = Enum.find state, fn(record) ->
-        record.__struct__ == new.__struct__ && record.id == new.id
-      end
+    Agent.update(__MODULE__, fn state ->
+      old =
+        Enum.find(state, fn record ->
+          record.__struct__ == new.__struct__ && record.id == new.id
+        end)
+
       state
       |> MapSet.delete(old)
       |> MapSet.put(Map.merge(old, new))
-    end
+    end)
   end
 
   def delete(%Ecto.Changeset{valid?: false} = changeset) do
@@ -85,24 +87,30 @@ defmodule JaResourceTest.Repo do
   end
 
   def delete(to_delete) do
-    Agent.update __MODULE__, fn(state) ->
-      old = Enum.find state, fn(record) ->
-        record.__struct__ == to_delete.__struct__ && record.id == to_delete.id
-      end
+    Agent.update(__MODULE__, fn state ->
+      old =
+        Enum.find(state, fn record ->
+          record.__struct__ == to_delete.__struct__ && record.id == to_delete.id
+        end)
+
       MapSet.delete(state, old)
-    end
+    end)
   end
 
   def transaction(%Ecto.Multi{operations: [{schema, {:changeset, %Ecto.Changeset{valid?: false} = changeset, _}}]}) do
     {:error, schema, changeset, %{}}
   end
 
-  def transaction(%Ecto.Multi{operations: [{schema, {:changeset, %Ecto.Changeset{valid?: true, action: :insert} = changeset, _}}]}) do
+  def transaction(%Ecto.Multi{
+        operations: [{schema, {:changeset, %Ecto.Changeset{valid?: true, action: :insert} = changeset, _}}]
+      }) do
     {:ok, inserted} = insert(changeset.data)
     {:ok, %{schema => inserted}}
   end
 
-  def transaction(%Ecto.Multi{operations: [{schema, {:changeset, %Ecto.Changeset{valid?: true, action: :update} = changeset, _}}]}) do
+  def transaction(%Ecto.Multi{
+        operations: [{schema, {:changeset, %Ecto.Changeset{valid?: true, action: :update} = changeset, _}}]
+      }) do
     {:ok, updated} = update(changeset)
     {:ok, %{schema => updated}}
   end
@@ -110,30 +118,32 @@ end
 
 # We don't actually need to use Ecto.Schema, just implement it's api.
 defmodule JaResourceTest.Post do
-  defstruct [id: 0, title: "title", body: "body", slug: "slug"]
+  defstruct id: 0, title: "title", body: "body", slug: "slug"
 
   def changeset(_model, params) do
     model = %__MODULE__{
       title: params["title"],
-      body:  params["body"],
-      slug:  params["slug"]
+      body: params["body"],
+      slug: params["slug"]
     }
+
     case model.title do
       "invalid" -> %Ecto.Changeset{data: model, valid?: false, errors: [title: "is invalid"]}
-      _         -> %Ecto.Changeset{data: model, valid?: true}
+      _ -> %Ecto.Changeset{data: model, valid?: true}
     end
   end
 end
 
 defmodule JaResourceTest.FailingOnDeletePost do
-  defstruct [id: 0, title: "title", body: "body", slug: "slug"]
+  defstruct id: 0, title: "title", body: "body", slug: "slug"
 
   def changeset(_model, params) do
     model = %__MODULE__{
       title: params["title"],
-      body:  params["body"],
-      slug:  params["slug"]
+      body: params["body"],
+      slug: params["slug"]
     }
+
     %Ecto.Changeset{data: model, valid?: false, errors: [title: "something went wrong"]}
   end
 end
@@ -141,6 +151,7 @@ end
 defmodule JaResourceTest.PostView do
   def render("errors.json", %{data: errors}),
     do: %{action: "errors.json", errors: render_errors(errors)}
+
   def render(action, opts),
     do: %{action: action, data: opts[:data]}
 
@@ -151,4 +162,4 @@ defmodule JaResourceTest.PostView do
     do: Enum.into(errors, %{})
 end
 
-JaResourceTest.Repo.start
+JaResourceTest.Repo.start()

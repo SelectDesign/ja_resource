@@ -27,16 +27,19 @@ defmodule JaResource.Model do
       @inferred_model JaResource.Model.model_from_controller(__MODULE__)
       def model(), do: @inferred_model
 
-      defoverridable [model: 0]
+      defoverridable model: 0
     end
   end
 
+  # Skip sobelow because the atom we are creating is based on the controller and we only have so many controllers.
+  # sobelow_skip ["DOS.StringToAtom"]
   def model_from_controller(module) do
-    [_elixir, app | rest] = module
-                            |> Atom.to_string
-                            |> String.split(".")
+    [_elixir, app | rest] =
+      module
+      |> Atom.to_string()
+      |> String.split(".")
 
-    [controller | _ ] = Enum.reverse(rest)
+    [controller | _] = Enum.reverse(rest)
     inferred = String.replace(controller, "Controller", "")
 
     String.to_atom("Elixir.#{app}.#{inferred}")
