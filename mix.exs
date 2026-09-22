@@ -17,8 +17,8 @@ defmodule JaResource.Mixfile do
 
   # Configuration for the OTP application
   def application do
-    extra_applications = if Mix.env() == :test, do: [:ecto, :poison], else: []
-    [applications: [:logger, :phoenix] ++ extra_applications]
+    extra_applications = if Mix.env() == :test, do: [:poison], else: []
+    [applications: [:ecto, :logger, :phoenix] ++ extra_applications]
   end
 
   defp deps() do
