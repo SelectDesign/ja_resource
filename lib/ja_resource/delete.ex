@@ -38,7 +38,7 @@ defmodule JaResource.Delete do
       end
 
   """
-  @callback handle_delete(Plug.Conn.t, JaResource.record) :: Plug.Conn.t | JaResource.record | nil
+  @callback handle_delete(Plug.Conn.t(), JaResource.record()) :: Plug.Conn.t() | JaResource.record() | nil
 
   defmacro __using__(_) do
     quote do
@@ -46,12 +46,13 @@ defmodule JaResource.Delete do
       use JaResource.Record
       @behaviour JaResource.Delete
       def handle_delete(conn, nil), do: nil
+
       def handle_delete(conn, model) do
         model
         |> __MODULE__.repo().delete
       end
 
-      defoverridable [handle_delete: 2]
+      defoverridable handle_delete: 2
     end
   end
 

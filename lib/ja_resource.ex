@@ -1,10 +1,10 @@
 defmodule JaResource do
-  @type record :: map() | Ecto.Schema.t
-  @type records :: module | Ecto.Query.t | list(record)
+  @type record :: map() | Ecto.Schema.t()
+  @type records :: module | Ecto.Query.t() | list(record)
   @type params :: map()
   @type attributes :: map()
-  @type id :: String.t
-  @type validation_errors :: {:error, Ecto.Changeset.t}
+  @type id :: String.t()
+  @type validation_errors :: {:error, Ecto.Changeset.t()}
 
   @moduledoc """
   When used, includes all restful actions behaviours. Also a plug.
@@ -40,6 +40,6 @@ defmodule JaResource do
   end
 
   @behaviour Plug
-  defdelegate init(opts),       to: JaResource.Plug
+  defdelegate init(opts), to: JaResource.Plug
   defdelegate call(conn, opts), to: JaResource.Plug
 end
