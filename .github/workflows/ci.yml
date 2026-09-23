@@ -33,7 +33,7 @@ jobs:
           key: ${{ runner.os }}-mix-build-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-build-
       - name: Clean dependencies that must recompile each build
-        run: mix deps.clean ranch #clean these because ja_resource errors when it compiles and ecto does not. Ranch does not compile when cached so it must download every time as of Elixir 1.15
+        run: mix deps.clean ranch cowlib #Ranch and cowlib do not compile when cached so it must download every time as of Elixir 1.15
       - name: Install dependencies
         run: mix deps.get
       - name: Check format
