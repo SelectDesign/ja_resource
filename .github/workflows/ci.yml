@@ -36,8 +36,8 @@ jobs:
         run: mix deps.get
       - name: Check format
         run: mix format --check-formatted
-      - name: DIAGNOSTIC=1 Compile dependencies
-        run: mix deps.compile --warnings-as-errors
+      - name: Compile dependencies
+        run: DIAGNOSTIC=1 mix deps.compile --warnings-as-errors
       - name: Compile app
         run: mix compile
       - name: Run sobelow
