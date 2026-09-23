@@ -5,7 +5,7 @@ defmodule JaResource.Mixfile do
     [
       app: :ja_resource,
       version: "0.3.2",
-      elixir: "~> 1.14",
+      elixir: "~> 1.15",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       source_url: "https://github.com/vt-elixir/ja_resource",
@@ -17,7 +17,8 @@ defmodule JaResource.Mixfile do
 
   # Configuration for the OTP application
   def application do
-    [applications: [:logger, :phoenix]]
+    extra_applications = if Mix.env() == :test, do: [:poison], else: []
+    [applications: [:ecto, :logger, :phoenix] ++ extra_applications]
   end
 
   defp deps() do
@@ -28,7 +29,7 @@ defmodule JaResource.Mixfile do
       {:phoenix, "~> 1.4"},
       {:ja_serializer, "~> 0.18"},
       {:poison, "~> 3.1"},
-      {:sobelow, "~> 0.14", only: [:dev, :test], runtime: false, warn_if_outdated: true}
+      {:sobelow, "~> 0.15", only: [:dev, :test], runtime: false, warn_if_outdated: true}
     ]
   end
 
