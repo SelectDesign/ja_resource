@@ -17,7 +17,8 @@ defmodule JaResource.Mixfile do
 
   # Configuration for the OTP application
   def application do
-    [applications: [:logger, :phoenix]]
+    extra_applications = if Mix.env() == :test, do: [:poison], else: []
+    [applications: [:ecto, :logger, :phoenix] ++ extra_applications]
   end
 
   defp deps() do
@@ -27,7 +28,8 @@ defmodule JaResource.Mixfile do
       {:plug_cowboy, "~> 2.6"},
       {:phoenix, "~> 1.4"},
       {:ja_serializer, "~> 0.18"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:sobelow, "~> 0.15", only: [:dev, :test], runtime: false, warn_if_outdated: true}
     ]
   end
 
