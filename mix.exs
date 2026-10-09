@@ -32,7 +32,7 @@ defmodule JaResource.Mixfile do
       # RTA is limiting this to 2.3.0
       {:decimal, "~> 2.3.0"},
       # Flow is limiting this to 3.7.2
-      {:ecto, "~> 3.7.2"},
+      {:ecto, ">= 3.7.2"},
       {:ja_serializer, "~> 0.18"},
       # All our apps are currently on 1.6.16
       {:phoenix, "~> 1.6.16"},
