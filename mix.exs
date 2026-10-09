@@ -48,7 +48,7 @@ defmodule JaResource.Mixfile do
       {:ranch, "~> 2.2.0"},
       {:sobelow, "~> 0.16", only: [:dev, :test], runtime: false, warn_if_outdated: true},
       # Flow is limiting this to 1.0.0
-      {:telemetry, "~> 1.0.0"}
+      {:telemetry, ">= 1.0.0"}
     ]
   end
 
