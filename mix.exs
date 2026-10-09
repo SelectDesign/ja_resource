@@ -42,7 +42,7 @@ defmodule JaResource.Mixfile do
       {:phoenix_template, "~> 1.0.4"},
       {:plug, "~> 1.17.0"},
       # Flow is limiting this to 2.6.2
-      {:plug_cowboy, "~> 2.6.2"},
+      {:plug_cowboy, ">= 2.6.2"},
       {:poison, "~> 3.1"},
       # All of our apps are currently on 2.2.0
       {:ranch, "~> 2.2.0"},
