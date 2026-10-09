@@ -24,13 +24,13 @@ defmodule JaResource.Mixfile do
   defp deps() do
     [
       # Flow is limiting this to 0.1.22
-      {:castore, "~> 0.1.22"},
+      {:castore, ">= 0.1.22"},
       # Flow is limiting this to 2.14.2
       {:cowboy, "~> 2.14.2"},
       # RTA is limiting this to 2.17.1
       {:cowlib, "~> 2.17.1"},
       # RTA is limiting this to 2.3.0
-      {:decimal, "~> 2.3.0"},
+      {:decimal, ">= 2.3.0"},
       # Flow is limiting this to 3.7.2
       {:ecto, ">= 3.7.2"},
       {:ja_serializer, "~> 0.18"},
