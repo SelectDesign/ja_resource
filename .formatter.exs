@@ -1,5 +1,5 @@
 [
-  import_deps: [:ecto],
+  import_deps: [:ecto, :phoenix],
   inputs: ["*.{ex,exs}", "{config,lib,test}/**/*.{ex,exs}"],
   line_length: 120
 ]

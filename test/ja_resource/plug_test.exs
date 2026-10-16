@@ -1,6 +1,6 @@
 defmodule JaResource.PlugTest do
   use ExUnit.Case
-  use Plug.Test
+  import Plug.Conn
 
   defmodule Example do
     def handle_index(conn, _), do: assign(conn, :handler, :index)

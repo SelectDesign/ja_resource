@@ -1,6 +1,7 @@
 defmodule JaResource.CreateTest do
   use ExUnit.Case
-  use Plug.Test
+  import Plug.Conn
+  import Plug.Test
   alias JaResource.Create
 
   defmodule DefaultController do

@@ -105,22 +105,35 @@ defmodule JaResource.Create do
   end
 
   @doc false
+  # If the application recompiles ja_resource without also recompiling ecto, this will fail.
+  # If you get an error in ja_resource similiar to "could not load module Ecto.Changeset due to reason :nofile"
+  # clean the ecto dependency and try again:
+  # mix deps.clean ecto
+  # or
+  # MIX_ENV=test mix deps.clean ecto
+  Code.ensure_loaded!(Ecto.Changeset)
+
   def insert(%Ecto.Changeset{} = changeset, controller) do
     controller.repo().insert(changeset)
   end
 
-  if Code.ensure_loaded?(Ecto.Multi) do
-    def insert(%Ecto.Multi{} = multi, controller) do
-      controller.repo().transaction(multi)
-    end
+  Code.ensure_loaded!(Ecto.Multi)
+
+  def insert(%Ecto.Multi{} = multi, controller) do
+    controller.repo().transaction(multi)
   end
 
   def insert(other, _controller), do: other
 
   @doc false
   def respond(%Plug.Conn{} = conn, _old_conn, _), do: conn
-  def respond({:error, errors}, conn, controller), do: controller.handle_invalid_create(conn, errors)
-  def respond({:error, _name, errors, _changes}, conn, controller), do: controller.handle_invalid_create(conn, errors)
+
+  def respond({:error, errors}, conn, controller),
+    do: controller.handle_invalid_create(conn, errors)
+
+  def respond({:error, _name, errors, _changes}, conn, controller),
+    do: controller.handle_invalid_create(conn, errors)
+
   def respond({:ok, model}, conn, controller), do: controller.render_create(conn, model)
   def respond(model, conn, controller), do: controller.render_create(conn, model)
 end

@@ -1,6 +1,7 @@
 defmodule JaResource.DeleteTest do
   use ExUnit.Case
-  use Plug.Test
+  import Plug.Conn
+  import Plug.Test
   alias JaResource.Delete
 
   defmodule DefaultController do
@@ -8,13 +9,6 @@ defmodule JaResource.DeleteTest do
     use JaResource.Delete
     def repo, do: JaResourceTest.Repo
     def model, do: JaResourceTest.Post
-  end
-
-  defmodule FailingOnDeleteController do
-    use Phoenix.Controller
-    use JaResource.Delete
-    def repo, do: JaResourceTest.Repo
-    def model, do: JaResourceTest.FailingOnDeletePost
   end
 
   defmodule CustomController do

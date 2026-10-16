@@ -1,6 +1,7 @@
 defmodule JaResource.UpdateTest do
   use ExUnit.Case
-  use Plug.Test
+  import Plug.Conn
+  import Plug.Test
   alias JaResource.Update
 
   defmodule DefaultController do

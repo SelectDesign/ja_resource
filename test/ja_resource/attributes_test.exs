@@ -58,7 +58,6 @@ defmodule JaResource.AttributesTest do
     }
 
     merged = %{
-      "type" => "post",
       "title" => "a post",
       "category_id" => "1",
       "tag_ids" => ["1", "2"]
@@ -79,7 +78,6 @@ defmodule JaResource.AttributesTest do
     }
 
     merged = %{
-      "type" => "post",
       "title" => "a post"
     }
 
@@ -100,7 +98,6 @@ defmodule JaResource.AttributesTest do
     }
 
     merged = %{
-      "type" => "post",
       "category_id" => "1"
     }
 

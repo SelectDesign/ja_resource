@@ -56,7 +56,6 @@ defmodule JaResource.Attributes do
     data
     |> parse_relationships
     |> Map.merge(attrs)
-    |> Map.put_new("type", data["type"])
   end
 
   defp parse_relationships(%{"relationships" => nil}) do
