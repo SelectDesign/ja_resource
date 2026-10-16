@@ -19,10 +19,10 @@ defmodule JaResource.ModelTest do
   end
 
   test "model is inferred by default" do
-    assert DefaultController.model == JaResource.Default
+    assert DefaultController.model() == JaResource.Default
   end
 
   test "model can be overridded" do
-    assert CustomController.model == Customized
+    assert CustomController.model() == Customized
   end
 end

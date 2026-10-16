@@ -14,10 +14,10 @@ defmodule JaResource.RepoTest do
   end
 
   test "Repo should be poplulated from settings by default" do
-    assert ExampleDefaultController.repo == MyApp.Repo
+    assert ExampleDefaultController.repo() == MyApp.Repo
   end
 
   test "Repo can be overriden" do
-    assert ExampleCustomController.repo == MyApp.SecondaryRepo
+    assert ExampleCustomController.repo() == MyApp.SecondaryRepo
   end
 end

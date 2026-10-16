@@ -24,7 +24,7 @@ defmodule JaResource.Record do
       end
 
   """
-  @callback record(Plug.Conn.t, JaResource.id) :: Plug.Conn.t | JaResource.record
+  @callback record(Plug.Conn.t(), JaResource.id()) :: Plug.Conn.t() | JaResource.record()
 
   defmacro __using__(_) do
     quote do
@@ -38,7 +38,7 @@ defmodule JaResource.Record do
           |> repo().get(id)
         end
 
-        defoverridable [record: 2]
+        defoverridable record: 2
       end
     end
   end

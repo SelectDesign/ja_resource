@@ -11,7 +11,7 @@ defmodule JaResource.SerializableTest do
     def serialization_opts(_conn, params, models) do
       [
         fields: %{"article" => params["fields"]["post"]},
-        meta: %{total_records: models |> Enum.count}
+        meta: %{total_records: models |> Enum.count()}
       ]
     end
   end
@@ -47,7 +47,8 @@ defmodule JaResource.SerializableTest do
   test "overridden behaviour" do
     conn = %Plug.Conn{}
     params = %{"fields" => %{"post" => "title,body"}}
-    models = [1,2,3]
+    models = [1, 2, 3]
+
     expected = [
       fields: %{"article" => "title,body"},
       meta: %{total_records: 3}
